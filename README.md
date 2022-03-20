@@ -25,13 +25,20 @@ ioBroker adapter to control FS20, Max!, HMS and other devices via [CUL](http://b
 ### Send a command to a FS20 Device in e.g. JavaScript
 ```sendTo("cul.0", "send", {"protocol":"FS20", "housecode":"A1B2", "address":"01", "command":"00"});```
 
-### Send a raw command (to a InterTechno device for example) using JavaSript
+### Send a raw command (to a InterTechno device for example) using JavaScript
 ```sendTo("cul.0", "sendraw", {"command": 'is0FFFFF0FFFFF'});```
 
-This commands use the CUL Library of this adapter to send the commands a Device.
-Javascript/Node.js based Busware CUL USB / culfw adapter
+These commands use the CUL Library of this adapter to send the commands a Device.
+Javascript/Node.js based `Busware CUL USB / culfw` adapter
+
+<!--
+	Placeholder for the next version (at the beginning of the line):
+	### **WORK IN PROGRESS**
+-->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Updated serialport package
 
 ### 1.3.5 (2021-04-12)
 * (Apollon77) Make sure that cul is connected before accepting state changes (Sentry IOBROKER-CUL-R)
@@ -48,7 +55,7 @@ Javascript/Node.js based Busware CUL USB / culfw adapter
 
 ### 1.3.1 (2020-07-26)
 * (Apollon77) make sure connection check do not crash adapter (Sentry IOBROKER-CUL-3)
-* (Apollon77) crashes preventd (Sentry IOBROKER-CUL-5, IOBROKER-CUL-8)
+* (Apollon77) crashes prevented (Sentry IOBROKER-CUL-5, IOBROKER-CUL-8)
 
 ### 1.3.0 (2020-07-20)
 * (Apollon77) Really update dependencies and Serialport
@@ -96,4 +103,4 @@ Javascript/Node.js based Busware CUL USB / culfw adapter
 
 ## License
 
-[Licensed under GPLv2](LICENSE) Copyright (c) 2014-2020 hobbyquaker
+[Licensed under GPLv2](LICENSE) Copyright (c) 2014-2022 hobbyquaker

@@ -49,7 +49,7 @@ function startAdapter(options) {
                         break;
 
                     default:
-                        adapter.log.error('Write of State ' + oAddr[4] + ' currently not implemented');
+                        adapter.log.error(`Write of State ${oAddr[4]} currently not implemented`);
                         break;
                 }
             } else {
@@ -79,11 +79,11 @@ function startAdapter(options) {
     adapter.on('ready', () => {
 
         try {
-            SerialPort = require('serialport');//.SerialPort;
+            SerialPort = require('serialport').SerialPort;
         } catch (err) {
             console.warn('Serial port is not available');
             if (adapter.supportsFeature && !adapter.supportsFeature('CONTROLLER_NPM_AUTO_REBUILD')) {
-                // re throw error to allow rebuild of serialport in js-controler 3.0.18+
+                // re throw error to allow rebuild of serialport in js-controller 3.0.18+
                 throw err;
             }
         }
@@ -150,7 +150,7 @@ function startAdapter(options) {
  * @param {obj.message.protocol, obj.message.housecode, obj.message.address, obj.message.command}
  */
 function sendCommand(o) {
-    adapter.log.info('Send command received. Housecode: ' + o.housecode + '; address: ' + o.address + '; command: ' + o.command);
+    adapter.log.info(`Send command received. Housecode: ${o.housecode}; address: ${o.address}; command: ${o.command}`);
     cul.cmd(o.protocol, o.housecode, o.address, o.command);
 }
 
@@ -240,7 +240,7 @@ function processTasks() {
             adapter.getForeignObject(task.id, (err, obj) => {
                 if (!obj) {
                     adapter.setForeignObject(task.id, task.obj, (err, res) => {
-                        adapter.log.info('object ' + adapter.namespace + '.' + task.id + ' created');
+                        adapter.log.info(`object ${adapter.namespace}.${task.id} created`);
                         setImmediate(processTasks);
                     });
                 } else {
@@ -252,7 +252,7 @@ function processTasks() {
 
                     if (changed) {
                         adapter.setForeignObject(obj._id, obj, (err, res) => {
-                            adapter.log.info('object ' + adapter.namespace + '.' + obj._id + ' created');
+                            adapter.log.info(`object ${adapter.namespace}.${obj._id} created`);
                             setImmediate(processTasks);
                         });
                     } else {
@@ -272,7 +272,7 @@ function setStates(obj) {
         if (!obj.data.hasOwnProperty(state)) {
             continue;
         }
-        const oid  = adapter.namespace + '.' + id + '.' + state;
+        const oid  = `${adapter.namespace}.${id}.${state}`;
         const meta = objects[oid];
         let val  = obj.data[state];
         if (meta) {
@@ -324,7 +324,7 @@ function connect(callback) {
         adapter.log.error('Error on Cul connection: ' +  err));
 
     cul.on('data', (raw, obj) => {
-        adapter.log.debug('RAW: ' + raw + ', ' + JSON.stringify(obj));
+        adapter.log.debug(`RAW: ${raw}, ${JSON.stringify(obj)}`);
         adapter.setState('info.rawData', raw, true);
 
         if (!obj || !obj.protocol || !obj.address) {
@@ -362,13 +362,13 @@ function connect(callback) {
                 common.name = _state + ' ' + (obj.device ? obj.device + ' ' : '') + id;
 
                 const newState = {
-                    _id:    adapter.namespace + '.' + id + '.' + _state,
+                    _id:    `${adapter.namespace}.${id}.${_state}`,
                     type:   'state',
                     common: common,
                     native: {}
                 };
 
-                objects[adapter.namespace + '.' + id + '.' + _state] = newState;
+                objects[`${adapter.namespace}.${id}.${_state}`] = newState;
                 tasks.push({type: 'object', id: newState._id, obj: newState});
             }
             objects[adapter.namespace + '.' + id] = newDevice;
@@ -385,7 +385,7 @@ function main() {
 
     adapter.getForeignObject('cul.meta.roles', (err, res) => {
         if (err || !res) {
-            adapter.log.error('Object cul.meta.roles does not exists - please reinstall adapter! (' + err + ')');
+            adapter.log.error(`Object cul.meta.roles does not exists - please reinstall adapter! (${err})`);
             typeof adapter.terminate === 'function' ? adapter.terminate(11) : process.exit(11);
             return;
         }
