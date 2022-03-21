@@ -200,7 +200,8 @@ function checkPort(callback) {
         }
         let sPort;
         try {
-            sPort = new SerialPort(adapter.config.serialport || '/dev/ttyACM0', {
+            sPort = new SerialPort({
+                path: adapter.config.serialport || '/dev/ttyACM0',
                 baudRate: parseInt(adapter.config.baudrate, 10) || 9600,
                 autoOpen: false
             });
