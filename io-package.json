@@ -148,6 +148,18 @@
             }
         },
         "title": "CUL/culfw",
+        "titleLang": {
+            "en": "CUL/culfw",
+            "de": "CUL/culfw",
+            "ru": "CUL/культура",
+            "pt": "CUL/culfw",
+            "nl": "CUL/culfw",
+            "fr": "CUL/culfw",
+            "it": "CUL/culf",
+            "es": "CUL/culfw",
+            "pl": "KUL/zapas",
+            "zh-cn": "CUL/culfw"
+        },
         "desc": {
             "en": "Javascript/Node.js based Busware CUL USB/culfw adapter",
             "de": "Javascript/Node.js basierter Busware CUL USB/Culfw Adapter",
@@ -160,7 +172,7 @@
             "pl": "Adapter Busware CUL USB/culfw oparty na Javascript/Node.js",
             "zh-cn": "基于Javascript/Node.js的Busware CUL USB/culfw适配器"
         },
-        "platform": "javascript/Node.js",
+        "platform": "Javascript/Node.js",
         "mode": "daemon",
         "loglevel": "info",
         "license": "GPL-2.0-or-later",
@@ -190,14 +202,17 @@
         ],
         "dependencies": [
             {
-                "js-controller": ">= 2.0.0"
+                "js-controller": ">=2.0.0"
             }
         ],
         "plugins": {
             "sentry": {
                 "dsn": "https://1df51a90ee094b88983dc43d700a5066@sentry.iobroker.net/89"
             }
-        }
+        },
+        "connectionType": "local",
+        "dataSource": "push",
+        "tier": 2
     },
     "native": {
         "serialport": "",

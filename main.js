@@ -328,7 +328,7 @@ function connect(callback) {
         adapter.log.debug(`RAW: ${raw}, ${JSON.stringify(obj)}`);
         adapter.setState('info.rawData', raw, true);
 
-        if (!obj || !obj.protocol || !obj.address) {
+        if (!obj || !obj.protocol || (!obj.address && obj.address !== 0)) {
             return;
         }
         const id = obj.protocol + '.' + obj.address;
