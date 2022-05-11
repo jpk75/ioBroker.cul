@@ -39,7 +39,7 @@ Javascript/Node.js based `Busware CUL USB / culfw` adapter
 -->
 
 ## Changelog
-### 2.0.0 (2022-05-11)
+### **WORK IN PROGRESS**
 * IMPORTANT: Nodejs 12.x is now needed at least!
 * (Apollon77/achimmm) Add support for devices with address 0
 * (bluefox) Updated serialport package
