@@ -1,6 +1,6 @@
 {
   "name": "iobroker.cul",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Javascript/Node.js based Busware CUL USB / culfw adapter",
   "author": "hobbyquaker <hq@ccu.io>",
   "contributors": [
