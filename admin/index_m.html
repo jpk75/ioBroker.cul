@@ -13,54 +13,39 @@
     <script type="text/javascript" src="words.js"></script>
 
 <script type="text/javascript">
-    var timeout;
-    var count;
-    var gOnChange;
-
-    function getComPorts(actualValue) {
-        count++;
-        if (count < 10) {
-            timeout = setTimeout(function () {
-                getComPorts(actualValue);
-            }, 2000);
-        }
-
+    function getComPorts(onChange, experimental) {
         sendTo(null, 'listUart', null, function (list) {
-            if (timeout) {
-                clearTimeout(timeout);
-                timeout = null;
-            }
-            if ((!list || !list.length) && count < 10) {
-                setTimeout(function () {
-                    getComPorts(actualValue);
-                }, 1000);
+            if (!list) {
                 return;
             }
-            if (!list || !list.length) {
-                $('#_serialport').html('<input id="serialport" type="text" class="value" value="' + actualValue + '" placeholder="' + _('Not ports found') + '"/><label  class="translate" for="serialport">Serial port</label>');
-                $('#serialport').change(gOnChange).on('keyup', gOnChange);
-                M.updateTextFields();
-            } else {
-                var text = '<option value="">' + _('Select port') + '</option>';
-                var $serialport = $('#serialport');
-
-                for (var j = 0; j < list.length; j++) {
-                    if (list[j].path === 'Not available') {
-                        text += '<option value="" selected>' + _('Not available') + '</option>';
-                        $serialport.prop('disabled', true);
-                        break;
-                    } else {
-                        text += '<option value="' + list[j].path + '" ' + ((actualValue === list[j].path) ? 'selected' : '') + '>' + list[j].path + '</option>';
+            const element = $('#ports');
+            for (let j = 0; j < list.length; j++) {
+                element.append('<li><a href="#!" data-value="' + list[j].comName + '"><b>' + list[j].comName + '</b>' + (list[j].label ? ('<br>[' + list[j].label + ']') : '') + '</a></li>');
+                if (experimental){
+                    // Experimental feature: add serial ports by id
+                    const dirSerial = '/dev/serial/by-id';
+                    if (list[j].id){
+                        element.append('<li><a href="#!" data-value="'+ dirSerial + '/' + list[j].id + '"><b>' + dirSerial + '/' + list[j].id + '</b>' + (list[j].manufacturer ? ('<br>[' + list[j].manufacturer + ']') : '') + '</a></li>');
                     }
+                } else {
                 }
-                $serialport.html(text).select();
             }
+            $('#ports a').click(function () {
+                $('#serialport').val($(this).data('value'));
+                M.updateTextFields();
+                onChange();
+            });
         });
     }
 
     function load(settings, onChange) {
         settings.type = settings.type || 'cul';
-        gOnChange = onChange;
+        if (settings.serialport === undefined) {
+            settings.serialport = "/dev/ttyACM0";
+        }
+        if (settings.experimental === undefined) {
+            settings.experimental = false;
+        }
 
         for (var key in settings) {
             if (!settings.hasOwnProperty(key)) continue;
@@ -87,16 +72,23 @@
 
         getIsAdapterAlive(function (isAlive) {
             if (isAlive || common.enabled) {
-                getComPorts(settings.serialport);
+                getComPorts(onChange, settings.experimental);
             } else {
-                $('#_serialport').html('<input id="serialport" type="text" class="value" value="' + settings.serialport + '"/><label  class="translate" for="serialport">Serial port</label>');
-                $('#serialport').change(onChange).on('keyup', onChange);
-                M.updateTextFields();
+                 M.updateTextFields();
             }
         });
 
         // Signal to admin, that no changes yet
         onChange(false);
+
+        $(document).ready(function () {
+            $('.modal').modal({
+                startingTop: '30%',
+                endingTop: '10%',
+            });
+            $('.dropdown-trigger').dropdown({constrainWidth: false});
+            M.updateTextFields();
+        });
     }
 
     function save(callback) {
@@ -112,6 +104,40 @@
         callback(obj);
     }
 </script>
+<style>
+    .input-group {
+        display: table;
+    }
+    
+    .input-group input, .suffix {
+        display: table-cell;
+    }
+
+    .suffix {
+        width: 1%;
+    }
+
+    .input-field.suffix a {
+        position: absolute;
+        font-size: 2rem;
+        top: 0px;
+        right: 0px;
+    }
+
+    .input-field.suffix a.active {
+        color: #26a69a;
+    }
+
+    .input-field.suffix .select-wrapper {
+        margin-right: 3rem;
+        width: 92%;
+        width: calc(100% - 3rem);
+    }
+
+    .input-field.suffix label {
+        margin-right: 3rem;
+    }
+</style>
 </head>
 <body>
 <div class="m adapter-container">
@@ -122,9 +148,15 @@
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s10 m4" id="_serialport">
-                <select id="serialport" class="value"></select>
+            <div class="input-field input-group col s10 m4" id="_serialport">
+                <input id="serialport" type="text" class="value validate"/>
                 <label  class="translate" for="serialport">Serial port</label>
+                <span class="suffix">
+                    <a id="selector" class='dropdown-trigger btn' href='#' data-target='ports'><i class="material-icons">arrow_drop_down</i></a>
+                <!-- Dropdown Structure -->
+                    <ul id='ports' class='dropdown-content'>
+                    </ul>
+                </span>
             </div>
             <div class="input-field col s10 m2">
                 <select id="baudrate"   class="value">
