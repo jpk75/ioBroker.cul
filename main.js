@@ -108,7 +108,13 @@ function startAdapter(options) {
                             // read all found serial ports
                             SerialPort.list().then(ports => {
                                 adapter.log.info('List of port: ' + JSON.stringify(ports));
-                                adapter.sendTo(obj.from, obj.command, ports, obj.callback);
+                                //adapter.sendTo(obj.from, obj.command, ports, obj.callback);
+                                adapter.sendTo(obj.from, obj.command, ports.map(item => ({
+                                    label: item.friendlyName || item.pnpId || item.manufacturer,
+                                    id: item.pnpId,
+                                    manufacturer: item.manufacturer,
+                                    comName: item.path
+                                })), obj.callback);
                             }).catch(err => {
                                 adapter.log.warn('Can not get Serial port list: ' + err);
                                 adapter.sendTo(obj.from, obj.command, [{path: 'Not available'}], obj.callback);
